@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent } from '../components/ui/card';
 import TipList from '../components/TipList';
 import MyStats from '../components/MyStats';
 import ProSubscription from '../components/ProSubscription';
@@ -9,7 +9,7 @@ import UserNameDialog from '../components/UserNameDialog';
 import { Tip, TelegramUser } from '../types';
 import { getTodayTips, mockUser, addTip, deleteTip, clearAllData } from '../data/mockData';
 import { formatCurrency, getTelegramUser, showTelegramAlert, saveToLocalStorage, loadFromLocalStorage, STORAGE_KEYS } from '../lib/utils';
-import { Plus, DollarSign, TrendingUp, Crown } from 'lucide-react';
+import { Plus, DollarSign, Crown } from 'lucide-react';
 
 const Home: React.FC = () => {
   const [tips, setTips] = useState<Tip[]>([]);
@@ -102,8 +102,6 @@ const Home: React.FC = () => {
     }
   };
 
-  const todayTotal = tips.reduce((sum, tip) => sum + tip.amount, 0);
-  const averageTip = tips.length > 0 ? Math.round(todayTotal / tips.length) : 0;
 
   return (
     <div className="min-h-screen bg-background p-4 space-y-6 overflow-y-auto">
@@ -140,7 +138,7 @@ const Home: React.FC = () => {
             <span className="text-sm opacity-90">Сегодня заработано</span>
           </div>
           <div className="text-3xl font-bold">
-            {formatCurrency(todayTotal)}
+            {formatCurrency(tips.reduce((sum, tip) => sum + tip.amount, 0))}
           </div>
           <div className="text-sm opacity-90 mt-1">
             {tips.length} чаевых
@@ -200,6 +198,22 @@ const Home: React.FC = () => {
                userName={userName || user?.first_name || 'Пользователь'}
              />
 
+             {/* Clear Data Button */}
+             {tips.length > 0 && (
+               <Card>
+                 <CardContent className="p-4">
+                   <Button
+                     variant="destructive"
+                     size="sm"
+                     onClick={handleClearAllData}
+                     className="w-full"
+                   >
+                     🗑️ Очистить все данные
+                   </Button>
+                 </CardContent>
+               </Card>
+             )}
+
       {/* Pro Subscription */}
       {!isProUser && (
         <div className="space-y-3">
@@ -220,45 +234,6 @@ const Home: React.FC = () => {
         </div>
       )}
 
-      {/* Quick Stats */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-emerald-500" />
-            Быстрая статистика
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-emerald-600">
-                {formatCurrency(todayTotal)}
-              </div>
-              <div className="text-sm text-muted-foreground">Сегодня</div>
-            </div>
-                   <div>
-                     <div className="text-2xl font-bold text-gold-600">
-                       {formatCurrency(averageTip)}
-                     </div>
-                     <div className="text-sm text-muted-foreground">Средний размер</div>
-                   </div>
-          </div>
-          
-          {/* Clear Data Button */}
-          {tips.length > 0 && (
-            <div className="mt-4 pt-4 border-t">
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleClearAllData}
-                className="w-full"
-              >
-                🗑️ Очистить все данные
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
 
       {/* Custom Tip Dialog */}
       <CustomTipDialog

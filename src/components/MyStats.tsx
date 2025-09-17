@@ -103,15 +103,15 @@ const MyStats: React.FC<MyStatsProps> = ({ tips, userName }) => {
 
         {/* Лучший день */}
         {bestDay.date && (
-          <div className="p-4 rounded-lg bg-gradient-to-r from-gold-50 to-gold-100 dark:from-gold-950/20 dark:to-gold-900/20 border border-gold-200 dark:border-gold-800">
+          <div className="p-4 rounded-lg bg-black dark:bg-black border border-gray-600">
             <div className="flex items-center gap-2 mb-2">
-              <Award className="w-4 h-4 text-gold-600" />
-              <span className="font-semibold text-gold-800 dark:text-gold-200">Лучший день</span>
+              <Award className="w-4 h-4 text-yellow-400" />
+              <span className="font-semibold text-white">Лучший день</span>
             </div>
-            <div className="text-lg font-bold text-gold-700 dark:text-gold-300">
+            <div className="text-lg font-bold text-yellow-300">
               {formatCurrency(bestDay.amount)}
             </div>
-            <div className="text-sm text-gold-600 dark:text-gold-400">
+            <div className="text-sm text-gray-300">
               {formatDate(new Date(bestDay.date))}
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import TipList from '../components/TipList';
@@ -102,6 +102,10 @@ const Home: React.FC = () => {
     }
   };
 
+  // Мемоизированное вычисление суммы для оптимизации
+  const todayTotal = useMemo(() => {
+    return tips.reduce((sum, tip) => sum + tip.amount, 0);
+  }, [tips]);
 
   return (
     <div className="min-h-screen bg-background p-4 space-y-6 overflow-y-auto">
@@ -138,7 +142,7 @@ const Home: React.FC = () => {
             <span className="text-sm opacity-90">Сегодня заработано</span>
           </div>
           <div className="text-3xl font-bold">
-            {formatCurrency(tips.reduce((sum, tip) => sum + tip.amount, 0))}
+            {formatCurrency(todayTotal)}
           </div>
           <div className="text-sm opacity-90 mt-1">
             {tips.length} чаевых

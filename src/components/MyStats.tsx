@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tip } from '../types';
 import { formatCurrency, formatDate } from '../lib/utils';
@@ -9,39 +9,55 @@ interface MyStatsProps {
   userName: string;
 }
 
-const MyStats: React.FC<MyStatsProps> = ({ tips, userName }) => {
-  // Вычисляем статистику
-  const totalAmount = tips.reduce((sum, tip) => sum + tip.amount, 0);
-  const totalTips = tips.length;
-  const averageTip = totalTips > 0 ? Math.round(totalAmount / totalTips) : 0;
-  
-  // Лучший день (по сумме)
-  const dailyTotals = tips.reduce((acc, tip) => {
-    const date = tip.date;
-    acc[date] = (acc[date] || 0) + tip.amount;
-    return acc;
-  }, {} as Record<string, number>);
-  
-  const bestDay = Object.entries(dailyTotals).reduce((best, [date, amount]) => {
-    return amount > best.amount ? { date, amount } : best;
-  }, { date: '', amount: 0 });
-  
-  // Статистика за неделю
-  const weekAgo = new Date();
-  weekAgo.setDate(weekAgo.getDate() - 7);
-  const weekTips = tips.filter(tip => new Date(tip.date) >= weekAgo);
-  const weekAmount = weekTips.reduce((sum, tip) => sum + tip.amount, 0);
-  
-  // Статистика за месяц
-  const monthAgo = new Date();
-  monthAgo.setMonth(monthAgo.getMonth() - 1);
-  const monthTips = tips.filter(tip => new Date(tip.date) >= monthAgo);
-  const monthAmount = monthTips.reduce((sum, tip) => sum + tip.amount, 0);
-  
-  // Категории чаевых
-  const smallTips = tips.filter(tip => tip.amount < 100).length;
-  const mediumTips = tips.filter(tip => tip.amount >= 100 && tip.amount < 200).length;
-  const largeTips = tips.filter(tip => tip.amount >= 200).length;
+const MyStats: React.FC<MyStatsProps> = memo(({ tips, userName }) => {
+  // Мемоизированные вычисления для оптимизации
+  const stats = useMemo(() => {
+    const totalAmount = tips.reduce((sum, tip) => sum + tip.amount, 0);
+    const totalTips = tips.length;
+    const averageTip = totalTips > 0 ? Math.round(totalAmount / totalTips) : 0;
+    
+    // Лучший день (по сумме)
+    const dailyTotals = tips.reduce((acc, tip) => {
+      const date = tip.date;
+      acc[date] = (acc[date] || 0) + tip.amount;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const bestDay = Object.entries(dailyTotals).reduce((best, [date, amount]) => {
+      return amount > best.amount ? { date, amount } : best;
+    }, { date: '', amount: 0 });
+    
+    // Статистика за неделю
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    const weekTips = tips.filter(tip => new Date(tip.date) >= weekAgo);
+    const weekAmount = weekTips.reduce((sum, tip) => sum + tip.amount, 0);
+    
+    // Статистика за месяц
+    const monthAgo = new Date();
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    const monthTips = tips.filter(tip => new Date(tip.date) >= monthAgo);
+    const monthAmount = monthTips.reduce((sum, tip) => sum + tip.amount, 0);
+    
+    // Категории чаевых
+    const smallTips = tips.filter(tip => tip.amount < 100).length;
+    const mediumTips = tips.filter(tip => tip.amount >= 100 && tip.amount < 200).length;
+    const largeTips = tips.filter(tip => tip.amount >= 200).length;
+
+    return {
+      totalAmount,
+      totalTips,
+      averageTip,
+      bestDay,
+      weekAmount,
+      monthAmount,
+      smallTips,
+      mediumTips,
+      largeTips
+    };
+  }, [tips]);
+
+  const { totalAmount, totalTips, averageTip, bestDay, weekAmount, monthAmount, smallTips, mediumTips, largeTips } = stats;
 
   return (
     <Card className="w-full">
@@ -171,5 +187,9 @@ const MyStats: React.FC<MyStatsProps> = ({ tips, userName }) => {
     </Card>
   );
 };
+
+});
+
+MyStats.displayName = 'MyStats';
 
 export default MyStats;

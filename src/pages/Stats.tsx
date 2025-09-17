@@ -34,7 +34,6 @@ const Stats: React.FC = () => {
     setWeeklyStats(mockWeeklyStats);
   }, []);
 
-
   const getAveragePerDay = () => {
     if (dailyStats.length === 0) return 0;
     const total = dailyStats.reduce((sum, day) => sum + day.totalAmount, 0);

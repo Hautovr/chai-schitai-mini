@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -13,7 +13,7 @@ interface TipListProps {
   onDeleteTip?: (tipId: string) => void;
 }
 
-const TipList: React.FC<TipListProps> = ({ tips, title = "Сегодняшние чаевые", showDate = false, onDeleteTip }) => {
+const TipList: React.FC<TipListProps> = memo(({ tips, title = "Сегодняшние чаевые", showDate = false, onDeleteTip }) => {
   const [deletingTipId, setDeletingTipId] = useState<string | null>(null);
 
   const handleDeleteTip = async (tipId: string) => {
@@ -112,5 +112,9 @@ const TipList: React.FC<TipListProps> = ({ tips, title = "Сегодняшние
     </Card>
   );
 };
+
+});
+
+TipList.displayName = 'TipList';
 
 export default TipList;

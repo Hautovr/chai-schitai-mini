@@ -67,7 +67,23 @@
 .tg-viewport {
   height: 100vh;
   height: 100dvh;
-  overflow: hidden;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure body and html can scroll */
+html, body {
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Main app container */
+#root {
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Custom scrollbar for web */
@@ -86,4 +102,23 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
+}
+
+/* Telegram WebApp specific scroll fixes */
+.tg-viewport {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Ensure proper scrolling in Telegram */
+body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Fix for iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .tg-viewport {
+    -webkit-overflow-scrolling: touch;
+  }
 }

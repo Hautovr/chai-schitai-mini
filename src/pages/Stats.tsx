@@ -53,7 +53,7 @@ const Stats: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4 space-y-6">
+    <div className="min-h-screen bg-background p-4 space-y-6 overflow-y-auto">
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-bold text-emerald-600">

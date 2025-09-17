@@ -122,7 +122,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="min-h-screen bg-background tg-viewport">
+      <div className="min-h-screen bg-background">
         {/* Header */}
         <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border">
           <div className="container mx-auto px-4 py-3">
@@ -153,7 +153,7 @@ const App: React.FC = () => {
         </header>
 
         {/* Main content */}
-        <main className="pb-20 md:pb-4">
+        <main className="pb-20 md:pb-4 min-h-[calc(100vh-140px)]">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/stats" element={<Stats />} />

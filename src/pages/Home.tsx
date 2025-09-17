@@ -103,7 +103,7 @@ const Home: React.FC = () => {
   const todayTotal = tips.reduce((sum, tip) => sum + tip.amount, 0);
 
   return (
-    <div className="min-h-screen bg-background p-4 space-y-6">
+    <div className="min-h-screen bg-background p-4 space-y-6 overflow-y-auto">
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-bold text-emerald-600">

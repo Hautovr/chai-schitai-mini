@@ -1,4 +1,5 @@
 import { Tip, LeaderboardEntry, DailyStats, WeeklyStats, TelegramUser } from '../types';
+import { saveToLocalStorage, loadFromLocalStorage, STORAGE_KEYS } from '../lib/utils';
 
 // Mock Telegram user
 export const mockUser: TelegramUser = {
@@ -10,23 +11,17 @@ export const mockUser: TelegramUser = {
   is_premium: false,
 };
 
-// Mock tips data - пустой массив для чистого старта
-export const mockTips: Tip[] = [];
-
-// Mock leaderboard data - пустой массив для чистого старта
-export const mockLeaderboard: LeaderboardEntry[] = [];
-
-// Mock daily stats - пустой массив для чистого старта
-export const mockDailyStats: DailyStats[] = [];
-
-// Mock weekly stats - пустые данные для чистого старта
-export const mockWeeklyStats: WeeklyStats = {
+// Load data from localStorage or use defaults
+export const mockTips: Tip[] = loadFromLocalStorage(STORAGE_KEYS.TIPS, []);
+export const mockLeaderboard: LeaderboardEntry[] = loadFromLocalStorage(STORAGE_KEYS.LEADERBOARD, []);
+export const mockDailyStats: DailyStats[] = loadFromLocalStorage(STORAGE_KEYS.DAILY_STATS, []);
+export const mockWeeklyStats: WeeklyStats = loadFromLocalStorage(STORAGE_KEYS.WEEKLY_STATS, {
   weekStart: new Date().toISOString().split('T')[0],
   weekEnd: new Date().toISOString().split('T')[0],
   totalAmount: 0,
   tipCount: 0,
   topWaiters: [],
-};
+});
 
 // Get today's tips
 export function getTodayTips(): Tip[] {
@@ -65,6 +60,8 @@ export function getCurrentWeekTips(): Tip[] {
 export function addTip(tip: Tip): void {
   mockTips.push(tip);
   updateLeaderboard();
+  saveToLocalStorage(STORAGE_KEYS.TIPS, mockTips);
+  saveToLocalStorage(STORAGE_KEYS.LEADERBOARD, mockLeaderboard);
 }
 
 // Delete a tip
@@ -73,6 +70,8 @@ export function deleteTip(tipId: string): boolean {
   if (index !== -1) {
     mockTips.splice(index, 1);
     updateLeaderboard();
+    saveToLocalStorage(STORAGE_KEYS.TIPS, mockTips);
+    saveToLocalStorage(STORAGE_KEYS.LEADERBOARD, mockLeaderboard);
     return true;
   }
   return false;
@@ -101,4 +100,26 @@ export function updateLeaderboard(): void {
   mockLeaderboard.length = 0;
   mockLeaderboard.push(...Array.from(leaderboardMap.values()));
   mockLeaderboard.sort((a, b) => b.totalAmount - a.totalAmount);
+}
+
+// Clear all data
+export function clearAllData(): void {
+  mockTips.length = 0;
+  mockLeaderboard.length = 0;
+  mockDailyStats.length = 0;
+  
+  // Reset weekly stats
+  Object.assign(mockWeeklyStats, {
+    weekStart: new Date().toISOString().split('T')[0],
+    weekEnd: new Date().toISOString().split('T')[0],
+    totalAmount: 0,
+    tipCount: 0,
+    topWaiters: [],
+  });
+  
+  // Clear localStorage
+  saveToLocalStorage(STORAGE_KEYS.TIPS, []);
+  saveToLocalStorage(STORAGE_KEYS.LEADERBOARD, []);
+  saveToLocalStorage(STORAGE_KEYS.DAILY_STATS, []);
+  saveToLocalStorage(STORAGE_KEYS.WEEKLY_STATS, mockWeeklyStats);
 }

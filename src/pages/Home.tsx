@@ -7,8 +7,8 @@ import ProSubscription from '../components/ProSubscription';
 import CustomTipDialog from '../components/CustomTipDialog';
 import UserNameDialog from '../components/UserNameDialog';
 import { Tip, LeaderboardEntry, TelegramUser } from '../types';
-import { getTodayTips, mockLeaderboard, mockUser, addTip, deleteTip } from '../data/mockData';
-import { formatCurrency, getTelegramUser, showTelegramAlert } from '../lib/utils';
+import { getTodayTips, mockLeaderboard, mockUser, addTip, deleteTip, clearAllData } from '../data/mockData';
+import { formatCurrency, getTelegramUser, showTelegramAlert, saveToLocalStorage, loadFromLocalStorage, STORAGE_KEYS } from '../lib/utils';
 import { Plus, DollarSign, TrendingUp, Crown } from 'lucide-react';
 
 const Home: React.FC = () => {
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
     setLeaderboard(mockLeaderboard);
 
     // Check if user name is saved in localStorage
-    const savedName = localStorage.getItem('userName');
+    const savedName = loadFromLocalStorage(STORAGE_KEYS.USER_NAME, '');
     if (savedName) {
       setUserName(savedName);
     } else {
@@ -50,7 +50,7 @@ const Home: React.FC = () => {
 
   const handleSaveUserName = (name: string) => {
     setUserName(name);
-    localStorage.setItem('userName', name);
+    saveToLocalStorage(STORAGE_KEYS.USER_NAME, name);
     // Показываем алерт асинхронно, чтобы не блокировать закрытие диалога
     setTimeout(() => {
       showTelegramAlert(`Привет, ${name}! Добро пожаловать в ЧайСчитай Mini!`);
@@ -93,6 +93,17 @@ const Home: React.FC = () => {
       // Update local state
       setTips(prev => prev.filter(tip => tip.id !== tipId));
       setLeaderboard(mockLeaderboard);
+    }
+  };
+
+  const handleClearAllData = () => {
+    const confirmed = confirm('Вы уверены, что хотите очистить все данные? Это действие нельзя отменить.');
+    
+    if (confirmed) {
+      clearAllData();
+      setTips([]);
+      setLeaderboard([]);
+      showTelegramAlert('Все данные очищены');
     }
   };
 
@@ -236,6 +247,20 @@ const Home: React.FC = () => {
               <div className="text-sm text-muted-foreground">Официантов</div>
             </div>
           </div>
+          
+          {/* Clear Data Button */}
+          {tips.length > 0 && (
+            <div className="mt-4 pt-4 border-t">
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleClearAllData}
+                className="w-full"
+              >
+                🗑️ Очистить все данные
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 

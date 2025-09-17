@@ -71,3 +71,39 @@ export function getWeekStart(date: Date = new Date()): Date {
   const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
   return new Date(d.setDate(diff));
 }
+
+// LocalStorage utilities
+export function saveToLocalStorage<T>(key: string, data: T): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.error('Error saving to localStorage:', error);
+  }
+}
+
+export function loadFromLocalStorage<T>(key: string, defaultValue: T): T {
+  try {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : defaultValue;
+  } catch (error) {
+    console.error('Error loading from localStorage:', error);
+    return defaultValue;
+  }
+}
+
+export function removeFromLocalStorage(key: string): void {
+  try {
+    localStorage.removeItem(key);
+  } catch (error) {
+    console.error('Error removing from localStorage:', error);
+  }
+}
+
+// Storage keys
+export const STORAGE_KEYS = {
+  TIPS: 'chai-schitai-tips',
+  LEADERBOARD: 'chai-schitai-leaderboard',
+  USER_NAME: 'chai-schitai-user-name',
+  DAILY_STATS: 'chai-schitai-daily-stats',
+  WEEKLY_STATS: 'chai-schitai-weekly-stats',
+} as const;

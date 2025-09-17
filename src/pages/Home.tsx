@@ -7,7 +7,7 @@ import ProSubscription from '../components/ProSubscription';
 import CustomTipDialog from '../components/CustomTipDialog';
 import UserNameDialog from '../components/UserNameDialog';
 import { Tip, LeaderboardEntry, TelegramUser } from '../types';
-import { getTodayTips, mockLeaderboard, mockUser } from '../data/mockData';
+import { getTodayTips, mockLeaderboard, mockUser, addTip, deleteTip } from '../data/mockData';
 import { formatCurrency, getTelegramUser, showTelegramAlert } from '../lib/utils';
 import { Plus, DollarSign, TrendingUp, Crown } from 'lucide-react';
 
@@ -57,7 +57,7 @@ const Home: React.FC = () => {
     }, 100);
   };
 
-  const addTip = (amount: number) => {
+  const handleAddTip = (amount: number) => {
     if (!user) return;
 
     const displayName = userName || user.first_name + (user.last_name ? ` ${user.last_name}` : '');
@@ -75,29 +75,25 @@ const Home: React.FC = () => {
       waiterUsername: user.username,
     };
 
-    setTips(prev => [newTip, ...prev]);
+    // Add to mock data
+    addTip(newTip);
     
-    // Update leaderboard
-    setLeaderboard(prev => {
-      const existingEntry = prev.find(entry => entry.waiterId === user.id);
-      if (existingEntry) {
-        return prev.map(entry => 
-          entry.waiterId === user.id 
-            ? { ...entry, totalAmount: entry.totalAmount + amount, tipCount: entry.tipCount + 1 }
-            : entry
-        );
-      } else {
-        return [...prev, {
-          waiterId: user.id,
-          waiterName: user.first_name + (user.last_name ? ` ${user.last_name}` : ''),
-          waiterUsername: user.username,
-          totalAmount: amount,
-          tipCount: 1,
-        }];
-      }
-    });
+    // Update local state
+    setTips(prev => [newTip, ...prev]);
+    setLeaderboard(mockLeaderboard);
 
     showTelegramAlert(`Добавлено чаевое: ${formatCurrency(amount)}`);
+  };
+
+  const handleDeleteTip = (tipId: string) => {
+    // Delete from mock data
+    const success = deleteTip(tipId);
+    
+    if (success) {
+      // Update local state
+      setTips(prev => prev.filter(tip => tip.id !== tipId));
+      setLeaderboard(mockLeaderboard);
+    }
   };
 
   const todayTotal = tips.reduce((sum, tip) => sum + tip.amount, 0);
@@ -153,7 +149,7 @@ const Home: React.FC = () => {
         </h2>
         <div className="grid grid-cols-3 gap-3">
           <Button 
-            onClick={() => addTip(10)}
+            onClick={() => handleAddTip(10)}
             variant="emerald"
             size="xl"
             className="h-16"
@@ -161,7 +157,7 @@ const Home: React.FC = () => {
             +10₽
           </Button>
           <Button 
-            onClick={() => addTip(50)}
+            onClick={() => handleAddTip(50)}
             variant="emerald"
             size="xl"
             className="h-16"
@@ -169,7 +165,7 @@ const Home: React.FC = () => {
             +50₽
           </Button>
           <Button 
-            onClick={() => addTip(100)}
+            onClick={() => handleAddTip(100)}
             variant="emerald"
             size="xl"
             className="h-16"
@@ -189,7 +185,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Today's Tips */}
-      <TipList tips={tips} />
+      <TipList tips={tips} onDeleteTip={handleDeleteTip} />
 
       {/* Leaderboard */}
       <Leaderboard 
@@ -247,7 +243,7 @@ const Home: React.FC = () => {
       <CustomTipDialog
         open={showCustomTipDialog}
         onOpenChange={setShowCustomTipDialog}
-        onAddTip={addTip}
+        onAddTip={handleAddTip}
       />
 
       {/* User Name Dialog */}

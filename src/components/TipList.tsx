@@ -1,17 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
+import { Button } from './ui/button';
 import { Tip } from '../types';
-import { formatCurrency, formatDate } from '../lib/utils';
-import { Clock, DollarSign } from 'lucide-react';
+import { formatCurrency, formatDate, showTelegramAlert } from '../lib/utils';
+import { Clock, DollarSign, Trash2 } from 'lucide-react';
 
 interface TipListProps {
   tips: Tip[];
   title?: string;
   showDate?: boolean;
+  onDeleteTip?: (tipId: string) => void;
 }
 
-const TipList: React.FC<TipListProps> = ({ tips, title = "Сегодняшние чаевые", showDate = false }) => {
+const TipList: React.FC<TipListProps> = ({ tips, title = "Сегодняшние чаевые", showDate = false, onDeleteTip }) => {
+  const [deletingTipId, setDeletingTipId] = useState<string | null>(null);
+
+  const handleDeleteTip = async (tipId: string) => {
+    if (!onDeleteTip) return;
+    
+    setDeletingTipId(tipId);
+    
+    // Показываем подтверждение
+    const confirmed = confirm('Вы уверены, что хотите удалить это чаевое?');
+    
+    if (confirmed) {
+      onDeleteTip(tipId);
+      showTelegramAlert('Чаевое удалено');
+    }
+    
+    setDeletingTipId(null);
+  };
   const getAmountBadge = (amount: number) => {
     if (amount >= 200) {
       return <Badge variant="gold">Большой</Badge>;
@@ -71,8 +90,19 @@ const TipList: React.FC<TipListProps> = ({ tips, title = "Сегодняшние
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="flex items-center gap-2">
                   {getAmountBadge(tip.amount)}
+                  {onDeleteTip && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteTip(tip.id)}
+                      disabled={deletingTipId === tip.id}
+                      className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}

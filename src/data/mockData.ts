@@ -60,3 +60,45 @@ export function getCurrentWeekTips(): Tip[] {
     return tipDate >= weekStart && tipDate <= weekEnd;
   });
 }
+
+// Add a new tip
+export function addTip(tip: Tip): void {
+  mockTips.push(tip);
+  updateLeaderboard();
+}
+
+// Delete a tip
+export function deleteTip(tipId: string): boolean {
+  const index = mockTips.findIndex(tip => tip.id === tipId);
+  if (index !== -1) {
+    mockTips.splice(index, 1);
+    updateLeaderboard();
+    return true;
+  }
+  return false;
+}
+
+// Update leaderboard based on current tips
+export function updateLeaderboard(): void {
+  const leaderboardMap = new Map<number, LeaderboardEntry>();
+  
+  mockTips.forEach(tip => {
+    const existing = leaderboardMap.get(tip.waiterId);
+    if (existing) {
+      existing.totalAmount += tip.amount;
+      existing.tipCount += 1;
+    } else {
+      leaderboardMap.set(tip.waiterId, {
+        waiterId: tip.waiterId,
+        waiterName: tip.waiterName,
+        waiterUsername: tip.waiterUsername,
+        totalAmount: tip.amount,
+        tipCount: 1,
+      });
+    }
+  });
+  
+  mockLeaderboard.length = 0;
+  mockLeaderboard.push(...Array.from(leaderboardMap.values()));
+  mockLeaderboard.sort((a, b) => b.totalAmount - a.totalAmount);
+}

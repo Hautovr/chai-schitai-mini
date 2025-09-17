@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ЧайСчитай логотип">
+  <defs>
+    <linearGradient id="bgGrad" x1="256" y1="0" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F766E"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <filter id="roundClip">
+      <feGaussianBlur stdDeviation="0"/>
+    </filter>
+  </defs>
+
+  <!-- Circular green background -->
+  <circle cx="256" cy="256" r="256" fill="url(#bgGrad)"/>
+
+  <!-- Mug + saucer group centered -->
+  <g transform="translate(0, 10)">
+    <!-- Saucer -->
+    <ellipse cx="256" cy="360" rx="150" ry="24" fill="#E5E7EB"/>
+
+    <!-- Mug body -->
+    <rect x="160" y="180" width="180" height="150" rx="22" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="6"/>
+
+    <!-- Mug handle -->
+    <path d="M352 206c32 0 58 22 58 50s-26 50-58 50" fill="none" stroke="#D1D5DB" stroke-width="18" stroke-linecap="round"/>
+    <path d="M352 226c20 0 36 13 36 30s-16 30-36 30" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>
+
+    <!-- Tea surface hint -->
+    <rect x="168" y="188" width="164" height="18" rx="9" fill="#F3F4F6"/>
+
+    <!-- Coin (tip) on saucer -->
+    <g transform="translate(320, 330)">
+      <circle cx="0" cy="0" r="22" fill="#FFD700" stroke="#E6C200" stroke-width="4"/>
+      <path d="M-8 0a8 8 0 1 0 16 0a8 8 0 1 0 -16 0z" fill="#FFE34D"/>
+    </g>
+
+    <!-- Steam shaped like % sign -->
+    <g transform="translate(210, 120)" stroke="#9CA3AF" stroke-width="10" stroke-linecap="round">
+      <!-- dot 1 -->
+      <circle cx="10" cy="30" r="10" fill="#9CA3AF"/>
+      <!-- slash -->
+      <path d="M50 70 L90 10"/>
+      <!-- dot 2 -->
+      <circle cx="110" cy="-5" r="10" fill="#9CA3AF"/>
+    </g>
+  </g>
+</svg>
+
+

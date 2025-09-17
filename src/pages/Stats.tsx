@@ -165,56 +165,27 @@ const Stats: React.FC = () => {
         </Card>
       )}
 
-      {/* Weekly Top 3 */}
-      {weeklyStats && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-gold-500" />
-            Топ-3 недели
-          </h2>
-          <div className="space-y-2">
-            {getTopWaiters().map((waiter, index) => (
-              <Card key={waiter.waiterId} className={
-                waiter.waiterId === user?.id 
-                  ? 'border-emerald-200 bg-emerald-50 dark:bg-emerald-950/20' 
-                  : ''
-              }>
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gold-100 dark:bg-gold-900/20 flex items-center justify-center">
-                        {index === 0 && <Trophy className="w-4 h-4 text-gold-500" />}
-                        {index === 1 && <span className="text-sm font-bold text-gray-400">2</span>}
-                        {index === 2 && <span className="text-sm font-bold text-amber-600">3</span>}
-                      </div>
-                      <div>
-                        <div className="font-medium">
-                          {waiter.waiterName}
-                          {waiter.waiterId === user?.id && (
-                            <Badge variant="emerald" className="ml-2 text-xs">Вы</Badge>
-                          )}
-                        </div>
-                        {waiter.waiterUsername && (
-                          <div className="text-sm text-muted-foreground">
-                            @{waiter.waiterUsername}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-bold text-lg">
-                        {formatCurrency(waiter.totalAmount)}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {waiter.tipCount} чаевых
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+      {/* Personal Achievement */}
+      {weeklyStats && weeklyStats.totalAmount > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-gold-500" />
+              Ваши достижения
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-4">
+              <div className="text-3xl mb-2">🏆</div>
+              <div className="text-lg font-semibold text-emerald-600 mb-2">
+                Отличная работа!
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Вы заработали {formatCurrency(weeklyStats.totalAmount)} за неделю
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Weekly Summary */}

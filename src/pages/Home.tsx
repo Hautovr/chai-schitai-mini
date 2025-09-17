@@ -2,18 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import TipList from '../components/TipList';
-import Leaderboard from '../components/Leaderboard';
+import MyStats from '../components/MyStats';
 import ProSubscription from '../components/ProSubscription';
 import CustomTipDialog from '../components/CustomTipDialog';
 import UserNameDialog from '../components/UserNameDialog';
-import { Tip, LeaderboardEntry, TelegramUser } from '../types';
-import { getTodayTips, mockLeaderboard, mockUser, addTip, deleteTip, clearAllData } from '../data/mockData';
+import { Tip, TelegramUser } from '../types';
+import { getTodayTips, mockUser, addTip, deleteTip, clearAllData } from '../data/mockData';
 import { formatCurrency, getTelegramUser, showTelegramAlert, saveToLocalStorage, loadFromLocalStorage, STORAGE_KEYS } from '../lib/utils';
 import { Plus, DollarSign, TrendingUp, Crown } from 'lucide-react';
 
 const Home: React.FC = () => {
   const [tips, setTips] = useState<Tip[]>([]);
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [user, setUser] = useState<TelegramUser | null>(null);
   const [isProUser] = useState(false);
   const [showProModal, setShowProModal] = useState(false);
@@ -34,9 +33,8 @@ const Home: React.FC = () => {
       setUser(mockUser);
     }
 
-    // Load data
-    setTips(getTodayTips());
-    setLeaderboard(mockLeaderboard);
+           // Load data
+           setTips(getTodayTips());
 
     // Check if user name is saved in localStorage
     const savedName = loadFromLocalStorage(STORAGE_KEYS.USER_NAME, '');
@@ -80,7 +78,6 @@ const Home: React.FC = () => {
     
     // Update local state
     setTips(prev => [newTip, ...prev]);
-    setLeaderboard(mockLeaderboard);
 
     showTelegramAlert(`Добавлено чаевое: ${formatCurrency(amount)}`);
   };
@@ -92,7 +89,6 @@ const Home: React.FC = () => {
     if (success) {
       // Update local state
       setTips(prev => prev.filter(tip => tip.id !== tipId));
-      setLeaderboard(mockLeaderboard);
     }
   };
 
@@ -102,12 +98,12 @@ const Home: React.FC = () => {
     if (confirmed) {
       clearAllData();
       setTips([]);
-      setLeaderboard([]);
       showTelegramAlert('Все данные очищены');
     }
   };
 
   const todayTotal = tips.reduce((sum, tip) => sum + tip.amount, 0);
+  const averageTip = tips.length > 0 ? Math.round(todayTotal / tips.length) : 0;
 
   return (
     <div className="min-h-screen bg-background p-4 space-y-6 overflow-y-auto">
@@ -198,11 +194,11 @@ const Home: React.FC = () => {
       {/* Today's Tips */}
       <TipList tips={tips} onDeleteTip={handleDeleteTip} />
 
-      {/* Leaderboard */}
-      <Leaderboard 
-        entries={leaderboard} 
-        currentUserId={user?.id}
-      />
+             {/* My Stats */}
+             <MyStats
+               tips={tips}
+               userName={userName || user?.first_name || 'Пользователь'}
+             />
 
       {/* Pro Subscription */}
       {!isProUser && (
@@ -240,12 +236,12 @@ const Home: React.FC = () => {
               </div>
               <div className="text-sm text-muted-foreground">Сегодня</div>
             </div>
-            <div>
-              <div className="text-2xl font-bold text-gold-600">
-                {leaderboard.length}
-              </div>
-              <div className="text-sm text-muted-foreground">Официантов</div>
-            </div>
+                   <div>
+                     <div className="text-2xl font-bold text-gold-600">
+                       {formatCurrency(averageTip)}
+                     </div>
+                     <div className="text-sm text-muted-foreground">Средний размер</div>
+                   </div>
           </div>
           
           {/* Clear Data Button */}

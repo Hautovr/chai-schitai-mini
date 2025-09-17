@@ -111,8 +111,6 @@ const TipList: React.FC<TipListProps> = memo(({ tips, title = "Сегодняш�
       </CardContent>
     </Card>
   );
-};
-
 });
 
 TipList.displayName = 'TipList';

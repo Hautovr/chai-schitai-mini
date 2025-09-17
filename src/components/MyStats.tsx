@@ -186,8 +186,6 @@ const MyStats: React.FC<MyStatsProps> = memo(({ tips, userName }) => {
       </CardContent>
     </Card>
   );
-};
-
 });
 
 MyStats.displayName = 'MyStats';

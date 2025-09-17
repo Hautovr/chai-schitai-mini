@@ -12,7 +12,7 @@ import { BarChart3, TrendingUp, Trophy, Calendar, DollarSign } from 'lucide-reac
 const Stats: React.FC = () => {
   const [dailyStats, setDailyStats] = useState<DailyStats[]>([]);
   const [weeklyStats, setWeeklyStats] = useState<WeeklyStats | null>(null);
-  const [user, setUser] = useState<TelegramUser | null>(null);
+  const [, setUser] = useState<TelegramUser | null>(null);
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
   const [timeRange, setTimeRange] = useState<'week' | 'month'>('week');
 
@@ -34,10 +34,6 @@ const Stats: React.FC = () => {
     setWeeklyStats(mockWeeklyStats);
   }, []);
 
-  const getTopWaiters = () => {
-    if (!weeklyStats) return [];
-    return weeklyStats.topWaiters.slice(0, 3);
-  };
 
   const getAveragePerDay = () => {
     if (dailyStats.length === 0) return 0;

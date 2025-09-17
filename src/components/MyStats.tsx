@@ -1,9 +1,8 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
 import { Tip } from '../types';
 import { formatCurrency, formatDate } from '../lib/utils';
-import { TrendingUp, Calendar, DollarSign, Target, Award, Clock } from 'lucide-react';
+import { TrendingUp, Calendar, Target, Award, Clock } from 'lucide-react';
 
 interface MyStatsProps {
   tips: Tip[];
